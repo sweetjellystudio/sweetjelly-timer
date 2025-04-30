@@ -1,5 +1,4 @@
-using System;
-using UnityEngine;
+using SWeetJelly.Core;
 
 namespace SWeetJelly.TimerService
 {
@@ -9,25 +8,27 @@ namespace SWeetJelly.TimerService
     public class FrequencyTimer : BaseTimer
     {
         public int TicksPerSecond {get; private set;}
-        public Action OnTick = delegate{};
         float timeThreshold;
 
-        public FrequencyTimer(int ticksPerSecond) : base(0)
+        public FrequencyTimer(int ticksPerSecond, bool useUnscaledTime = false, float tickSpeed = 1f) : base(0, useUnscaledTime, tickSpeed)
         {
             CalculateTimeThreshold(ticksPerSecond);
         }
 
-        public override void Tick()
+        public override void Tick(float deltaTime)
         {
-            if(IsRunning && CurrentTime <= timeThreshold)
+            if(!IsRunning)
             {
-                CurrentTime += initialTime;
+                return;
             }
 
-            if(IsRunning && CurrentTime > timeThreshold)
+            CurrentTime += deltaTime;
+
+            while(CurrentTime > timeThreshold)
             {
                 CurrentTime -= timeThreshold;
-                OnTick.Invoke();
+                OnStopped();
+                OnStarted();
             }
         }
 
