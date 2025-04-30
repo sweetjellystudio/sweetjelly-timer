@@ -1,4 +1,4 @@
-using UnityEngine;
+using SWeetJelly.Core;
 
 namespace SWeetJelly.TimerService
 {
@@ -7,18 +7,20 @@ namespace SWeetJelly.TimerService
     /// </summary>
     public class CountdownTimer : BaseTimer
     {
-        public CountdownTimer(float value) : base(value) {}
+        public CountdownTimer(float value, bool useUnscaledTime = false, float tickSpeed = 1f) : base(value, useUnscaledTime, tickSpeed) {}
 
-        public override void Tick()
+        public override void Tick(float deltaTime)
         {
-            if(IsRunning && CurrentTime <= 0)
+            if(!IsRunning)
             {
-                Stop();
+                return;
             }
 
-            if(IsRunning && CurrentTime > 0)
+            CurrentTime -= deltaTime;
+
+            if(CurrentTime <= 0)
             {
-                CurrentTime -= Time.deltaTime;
+                Stop();
             }
         }
 
