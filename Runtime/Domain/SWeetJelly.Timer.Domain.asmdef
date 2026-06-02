@@ -1,0 +1,16 @@
+{
+    "name": "SWeetJelly.Timer.Domain",
+    "rootNamespace": "SWeetJelly.Timer.Domaina",
+    "references": [
+        "SWeetJelly.Timer.Contract"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

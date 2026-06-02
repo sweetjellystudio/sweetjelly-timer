@@ -1,13 +1,14 @@
 {
-    "name": "SWeetJelly.TimerService",
-    "rootNamespace": "SWeetJelly.TimerService",
+    "name": "SWeetJelly.Timer.Framework",
+    "rootNamespace": "SWeetJelly.Timer.Framework",
     "references": [
-        "GUID:e4361ad4e8ac72a4bbed9ae68099987e",
-        "GUID:1a23072fb1a89e346b31355710ad9095"
+        "SWeetJelly.Timer.Contract",
+        "SWeetJelly.Timer.Domain",
+        "SWeetJelly.Timer.App"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": true,
+    "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

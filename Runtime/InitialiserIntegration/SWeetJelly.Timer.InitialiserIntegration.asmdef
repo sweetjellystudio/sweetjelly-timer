@@ -1,0 +1,21 @@
+{
+    "name": "SWeetJelly.Timer.InitialiserIntegration",
+    "rootNamespace": "SWeetJelly.Timer.InitialiserIntegration",
+    "references": [
+        "SWeetJelly.Timer.Contract",
+        "SWeetJelly.Timer.Domain",
+        "SWeetJelly.Timer.App",
+        "SWeetJelly.Timer.Framework",
+        "SWeetJelly.Initialiser.Framework",
+        "SWeetJelly.Initialiser.Contract"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
