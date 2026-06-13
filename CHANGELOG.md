@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [2.0.0]
+## v2.0.0
 
 - [Changed] Refactored the timer module into layered assemblies: `Contract`, `Domain`, `App`, `Framework`, and `InitialiserIntegration`.
 - [Changed] Replaced the `BaseTimerManager` inheritance-based architecture with service/contract-based timer management.
@@ -18,10 +18,10 @@
 - [Removed] Removed Unity `PlayerLoop`, `Time.deltaTime`, editor play mode handling, and service registration responsibilities from the timer manager.
 - [Removed] Removed the old `BaseTimerManager`-centric registration flow.
 
-## [1.0.1]
+## v1.0.1
 
 - [Changed] All timer subclasses have been updated to inherit from `BaseTimer` by changing interface `ITimer` to abstract class `BaseTimer` in the Core module.
 
-## [1.0.0]
+## v1.0.0
 
 - basic logic
