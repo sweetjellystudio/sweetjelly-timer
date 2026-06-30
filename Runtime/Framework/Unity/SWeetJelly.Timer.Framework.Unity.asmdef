@@ -1,13 +1,10 @@
 {
-    "name": "SWeetJelly.Timer.InitialiserIntegration",
-    "rootNamespace": "SWeetJelly.Timer.InitialiserIntegration",
+    "name": "SWeetJelly.Timer.Framework.Unity",
+    "rootNamespace": "SWeetJelly.Timer.Framework.Unity",
     "references": [
         "SWeetJelly.Timer.Contract",
         "SWeetJelly.Timer.Domain",
-        "SWeetJelly.Timer.App",
-        "SWeetJelly.Timer.Framework",
-        "SWeetJelly.Initialiser.Framework",
-        "SWeetJelly.Initialiser.Contract"
+        "SWeetJelly.Timer.App"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

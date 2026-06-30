@@ -1,6 +1,6 @@
 # SWeetJelly Timer
 
-`SWeetJelly Timer` is a Unity timer module that provides countdown, stopwatch, and frequency-based timer logic.
+`SWeetJelly Timer` is a timer package that provides countdown, stopwatch, and frequency-based timer logic.
 
 The module is designed around a layered architecture. Timer domain logic is separated from Unity runtime integration, so timer behavior can remain pure and testable while Unity `PlayerLoop` integration is handled by a framework driver.
 
@@ -16,7 +16,7 @@ The module is designed around a layered architecture. Timer domain logic is sepa
 - Scaled and unscaled time support
 - Tick speed control
 - Unity `PlayerLoop` integration
-- Initialiser integration module
+- Bootstrapper integration module
 
 ---
 
@@ -52,9 +52,9 @@ sweetjelly-timer/
       PlayerLoopTimerDriver.cs
       PlayerLoopUtils.cs
 
-    InitialiserIntegration/
-      SWeetJelly.Timer.InitialiserIntegration.asmdef
-      TimerInitModule.cs
+    Framework/Bootstrapper/
+      SWeetJelly.Timer.Framework.Bootstrapper.asmdef
+      TimerPackageBootstrapperSo.cs
 ```
 
 ---
@@ -83,8 +83,8 @@ SWeetJelly.Timer.Framework
   - Unity integration layer
   - Connects timer ticking to Unity PlayerLoop
 
-SWeetJelly.Timer.InitialiserIntegration
-  - Integration layer between Timer and Initialiser modules
+SWeetJelly.Timer.Framework.Bootstrapper
+  - Integration layer between Timer and Bootstrapper packages
   - Installs and uninstalls the PlayerLoop timer driver
 ```
 
@@ -106,11 +106,11 @@ SWeetJelly.Timer.App
 SWeetJelly.Timer.Framework
   - SWeetJelly.Timer.Contract
 
-SWeetJelly.Timer.InitialiserIntegration
+SWeetJelly.Timer.Framework.Bootstrapper
   - SWeetJelly.Timer.Contract
   - SWeetJelly.Timer.App
   - SWeetJelly.Timer.Framework
-  - SWeetJelly.Initialiser.Contract
+  - SWeetJelly.Bootstrapper.Contract
 ```
 
 External project code should usually depend only on:
@@ -130,7 +130,7 @@ The concrete timer service and Unity player loop driver should be created and wi
 ```csharp
 using SWeetJelly.Timer.App;
 using SWeetJelly.Timer.Contract;
-using SWeetJelly.Timer.Framework;
+using SWeetJelly.Timer.Framework.Unity;
 
 var timerService = new TimerService();
 
@@ -370,19 +370,19 @@ public void DisposeTimer()
 
 ---
 
-## Initialiser Integration
+## Bootstrapper Integration
 
-When using the Initialiser module, `TimerInitModule` can be used to install the timer player loop driver.
+When using the Bootstrapper package, `TimerPackageBootstrapperSo` can be used to install the timer player loop driver.
 
 ```csharp
 using SWeetJelly.Timer.App;
-using SWeetJelly.Timer.Framework;
-using SWeetJelly.Timer.InitialiserIntegration;
+using SWeetJelly.Timer.Framework.Unity;
+using SWeetJelly.Timer.Framework.Bootstrapper;
 
 var timerService = new TimerService();
 var timerDriver = new PlayerLoopTimerDriver(timerService);
 
-var initModule = new TimerInitModule(timerDriver);
+var initModule = new TimerPackageBootstrapperSo(timerDriver);
 initModule.Initialise();
 ```
 
@@ -417,7 +417,7 @@ Timer domain objects do not know:
 * Unity `PlayerLoop`
 * `Time.deltaTime`
 * `ServiceLocator`
-* Initialiser modules
+* Bootstrapper packages
 * Global manager instances
 
 ---
@@ -440,23 +440,3 @@ Project.Framework / Bootstrap
 ```
 
 This allows systems such as `LevelSession` to use timers without knowing how the timer service is updated.
-
----
-
-## Version Notes
-
-### 2.0.0
-
-This version introduces a breaking architecture refactor.
-
-Main changes:
-
-* Replaced the old `BaseTimerManager`-centric flow with `ITimerService`
-* Removed direct `ServiceLocator` dependency from timer instances
-* Moved Unity `PlayerLoop` integration into `PlayerLoopTimerDriver`
-* Split the module into `Contract`, `Domain`, `App`, `Framework`, and `InitialiserIntegration`
-* Timer domain objects now contain pure timer logic
-
-### 1.x
-
-The `1.x` versions are considered early internal releases using the previous inheritance/global-manager based structure.

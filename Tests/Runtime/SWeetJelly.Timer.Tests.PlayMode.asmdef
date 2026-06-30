@@ -1,0 +1,21 @@
+{
+    "name": "SWeetJelly.Timer.Tests.PlayMode",
+    "rootNamespace": "SWeetJelly.Timer.Tests.PlayMode",
+    "references": [
+        "SWeetJelly.Timer.Contract",
+        "SWeetJelly.Timer.App",
+        "SWeetJelly.Timer.Framework.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "noEngineReferences": false
+}

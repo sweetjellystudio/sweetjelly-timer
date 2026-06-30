@@ -3,7 +3,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.LowLevel;
 
-namespace SWeetJelly.Timer.Framework
+namespace SWeetJelly.Timer.Framework.Unity
 {
     public static class PlayerLoopUtils
     {

@@ -1,15 +1,22 @@
-{
-  "name": "com.sweetjelly.timer",
-  "version": "2.0.0",
-  "displayName": "SWeetJelly Timer",
-  "description": "This is SWeetJelly Timer Service",
-  "unity": "2022.3",
-  "dependencies": {
-    "com.sweetjelly.utils": "1.0.0"
-  },
-  "author": {
-    "name": "SWeetJellyStudio",
-    "email": "sweetjellystudio@gmail.com",
-    "url": "https://www.sweetjellystudio.com"
-  }
+﻿{
+    "name":  "com.sweetjelly.timer",
+    "version":  "1.0.0",
+    "displayName":  "SWeetJelly Timer",
+    "description":  "This is SWeetJelly Timer Service",
+    "unity":  "2022.3",
+    "dependencies":  {
+                         "com.sweetjelly.bootstrapper":  "1.0.0"
+                     },
+    "author":  {
+                   "name":  "SWeetJellyStudio",
+                   "email":  "sweetjellystudio@gmail.com",
+                   "url":  "https://www.sweetjellystudio.com"
+               },
+    "samples":  [
+                    {
+                        "displayName":  "Timer Sample",
+                        "description":  "Sample scene and assets for Timer Sample.",
+                        "path":  "Samples~/Basic"
+                    }
+                ]
 }
