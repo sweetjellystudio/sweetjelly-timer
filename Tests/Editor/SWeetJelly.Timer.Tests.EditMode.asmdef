@@ -1,0 +1,28 @@
+{
+    "name": "SWeetJelly.Timer.Tests.EditMode",
+    "rootNamespace": "SWeetJelly.Timer.Tests.EditMode",
+    "references": [
+        "SWeetJelly.Timer.Contract",
+        "SWeetJelly.Timer.Domain",
+        "SWeetJelly.Timer.App",
+        "SWeetJelly.Timer.Framework.Unity",
+        "SWeetJelly.Timer.Framework.Bootstrapper",
+        "SWeetJelly.Bootstrapper.Contract",
+        "SWeetJelly.Bootstrapper.App",
+        "SWeetJelly.Bootstrapper.Framework.Unity"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "noEngineReferences": false
+}

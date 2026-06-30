@@ -1,0 +1,30 @@
+﻿{
+    "name":  "SWeetJelly.Timer.Framework.Bootstrapper",
+    "rootNamespace":  "SWeetJelly.Timer.Framework.Bootstrapper",
+    "references":  [
+                       "SWeetJelly.Bootstrapper.Contract",
+                       "SWeetJelly.Bootstrapper.Framework.Unity",
+                       "SWeetJelly.Timer.Contract",
+                       "SWeetJelly.Timer.App",
+                       "SWeetJelly.Timer.Framework.Unity"
+                   ],
+    "includePlatforms":  [
+
+                         ],
+    "excludePlatforms":  [
+
+                         ],
+    "allowUnsafeCode":  false,
+    "overrideReferences":  false,
+    "precompiledReferences":  [
+
+                              ],
+    "autoReferenced":  true,
+    "defineConstraints":  [
+
+                          ],
+    "versionDefines":  [
+
+                       ],
+    "noEngineReferences":  false
+}

@@ -1,10 +1,10 @@
 {
-    "name": "SWeetJelly.Timer.Framework",
-    "rootNamespace": "SWeetJelly.Timer.Framework",
+    "name": "SWeetJelly.Timer.Sample",
+    "rootNamespace": "SWeetJelly.Samples.Timer",
     "references": [
-        "SWeetJelly.Timer.Contract",
-        "SWeetJelly.Timer.Domain",
-        "SWeetJelly.Timer.App"
+        "SWeetJelly.Bootstrapper.Contract",
+        "SWeetJelly.Bootstrapper.Framework.Unity",
+        "SWeetJelly.Timer.Contract"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

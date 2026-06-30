@@ -14,7 +14,7 @@
 - Scaled/unscaled time 지원
 - Tick speed control
 - Unity `PlayerLoop` integration
-- Initialiser integration module
+- Bootstrapper integration module
 
 ## 패키지 구조
 
@@ -48,9 +48,9 @@ sweetjelly-timer/
       PlayerLoopTimerDriver.cs
       PlayerLoopUtils.cs
 
-    InitialiserIntegration/
-      SWeetJelly.Timer.InitialiserIntegration.asmdef
-      TimerInitModule.cs
+    Framework/Bootstrapper/
+      SWeetJelly.Timer.Framework.Bootstrapper.asmdef
+      TimerPackageBootstrapperSo.cs
 ```
 
 ## 아키텍처
@@ -77,8 +77,8 @@ SWeetJelly.Timer.Framework
   - Unity integration layer
   - timer ticking을 Unity PlayerLoop에 연결
 
-SWeetJelly.Timer.InitialiserIntegration
-  - Timer와 Initialiser module 사이의 integration layer
+SWeetJelly.Timer.Framework.Bootstrapper
+  - Timer와 Bootstrapper package 사이의 integration layer
   - PlayerLoop timer driver 설치와 해제 담당
 ```
 
@@ -98,11 +98,11 @@ SWeetJelly.Timer.App
 SWeetJelly.Timer.Framework
   - SWeetJelly.Timer.Contract
 
-SWeetJelly.Timer.InitialiserIntegration
+SWeetJelly.Timer.Framework.Bootstrapper
   - SWeetJelly.Timer.Contract
   - SWeetJelly.Timer.App
   - SWeetJelly.Timer.Framework
-  - SWeetJelly.Initialiser.Contract
+  - SWeetJelly.Bootstrapper.Contract
 ```
 
 외부 project code는 보통 다음 assembly에만 의존하는 것이 좋습니다.
@@ -120,7 +120,7 @@ SWeetJelly.Timer.Contract
 ```csharp
 using SWeetJelly.Timer.App;
 using SWeetJelly.Timer.Contract;
-using SWeetJelly.Timer.Framework;
+using SWeetJelly.Timer.Framework.Unity;
 
 var timerService = new TimerService();
 
@@ -348,19 +348,19 @@ public void DisposeTimer()
 }
 ```
 
-## Initialiser Integration
+## Bootstrapper Integration
 
-Initialiser module을 사용할 때는 `TimerInitModule`로 timer player loop driver를 설치할 수 있습니다.
+Bootstrapper package을 사용할 때는 `TimerPackageBootstrapperSo`로 timer player loop driver를 설치할 수 있습니다.
 
 ```csharp
 using SWeetJelly.Timer.App;
-using SWeetJelly.Timer.Framework;
-using SWeetJelly.Timer.InitialiserIntegration;
+using SWeetJelly.Timer.Framework.Unity;
+using SWeetJelly.Timer.Framework.Bootstrapper;
 
 var timerService = new TimerService();
 var timerDriver = new PlayerLoopTimerDriver(timerService);
 
-var initModule = new TimerInitModule(timerDriver);
+var initModule = new TimerPackageBootstrapperSo(timerDriver);
 initModule.Initialise();
 ```
 
@@ -393,7 +393,7 @@ Timer domain object는 다음을 알지 않습니다.
 - Unity `PlayerLoop`
 - `Time.deltaTime`
 - `ServiceLocator`
-- Initialiser module
+- Bootstrapper package
 - global manager instance
 
 ## 권장 의존 방향
@@ -426,7 +426,7 @@ Project.Framework / Bootstrap
 - 기존 `BaseTimerManager` 중심 흐름을 `ITimerService`로 교체
 - timer instance의 직접적인 `ServiceLocator` 의존 제거
 - Unity `PlayerLoop` integration을 `PlayerLoopTimerDriver`로 이동
-- module을 `Contract`, `Domain`, `App`, `Framework`, `InitialiserIntegration`으로 분리
+- module을 `Contract`, `Domain`, `App`, `Framework/Unity`, `Framework/Bootstrapper`으로 분리
 - Timer domain object가 순수 timer logic을 가지도록 변경
 
 ### 1.x

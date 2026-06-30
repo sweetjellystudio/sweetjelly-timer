@@ -1,6 +1,6 @@
 {
     "name": "SWeetJelly.Timer.Domain",
-    "rootNamespace": "SWeetJelly.Timer.Domaina",
+    "rootNamespace": "SWeetJelly.Timer.Domain",
     "references": [
         "SWeetJelly.Timer.Contract"
     ],

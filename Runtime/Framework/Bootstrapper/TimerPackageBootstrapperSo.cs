@@ -1,24 +1,21 @@
-namespace SWeetJelly.Timer.InitialiserIntegration
+﻿namespace SWeetJelly.Timer.Framework.Bootstrapper
 {
-    using SWeetJelly.Initialiser.Contract;
-    using SWeetJelly.Initialiser.Framework;
+    using SWeetJelly.Bootstrapper.Framework.Unity;
     using UnityEngine;
     using SWeetJelly.Timer.Contract;
     using SWeetJelly.Timer.App;
-    using SWeetJelly.Timer.Framework;
-
-    [RegisterModule("Timer")]
+    using SWeetJelly.Timer.Framework.Unity;
     [CreateAssetMenu(
-        fileName = "Timer Init Module", 
-        menuName = "SWeetJelly/Initialiser/Modules/Timer")]
-    public class TimerInitModule: InitModuleSo
+        fileName = "Timer Package Bootstrapper", 
+        menuName = "SWeetJelly/Bootstrapper/Packages/Timer")]
+    public class TimerPackageBootstrapperSo : PackageBootstrapperSo
     {
         private PlayerLoopTimerDriver driver;
         private TimerService service;
 
-        public override string ModuleName => "Timer";
+        public override string PackageName => "Timer";
 
-        public override void Install(InitModuleInstallContext context)
+        public override void Bootstrap(PackageBootstrapContext context)
         {
             service = new TimerService();
 
@@ -28,7 +25,7 @@ namespace SWeetJelly.Timer.InitialiserIntegration
             context.Services.Register<ITimerService>(service);
         }
 
-        public void Uninstall(InitModuleInstallContext context)
+        public override void Shutdown(PackageBootstrapContext context)
         {
             driver?.Uninstall();
             service?.Dispose();
