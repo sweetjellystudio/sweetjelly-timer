@@ -18,5 +18,6 @@
                         "description":  "Sample scene and assets for Timer Sample.",
                         "path":  "Samples~/Basic"
                     }
-                ]
+                ],
+    "license":  "MIT"
 }
