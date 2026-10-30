@@ -8,7 +8,7 @@ namespace SWeetJelly.Timer.Contract
     {
         ITimerHandle StartCountdown(float seconds, Action? onCompleted = null, TimerOptions? options = null);
 
-        ITimerHandle StartFrequency(float intervalSeconds, Action? onTick, TimerOptions? options = null);
+        ITimerHandle StartFrequency(float intervalSeconds, Action onTick, TimerOptions? options = null);
 
         ITimerHandle StartStopwatch(Action<float>? onTick = null, TimerOptions? options = null);
     }

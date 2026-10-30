@@ -26,3 +26,10 @@
 - `TimerPlayerLoopFlowTest`
   - `PlayerLoopTimerDriver`를 설치하면 다음 프레임부터 `ITimerTicker.Tick(...)`이 호출되는지 검증한다.
   - 테스트 종료 시 driver를 uninstall해서 PlayerLoop 변경이 남지 않도록 정리한다.
+## 2.0.0 검증 추가
+
+TimerLifecycleRegressionTest는 callback 중 Stop/Pause/Dispose, service 종료, Tick 재진입, stopwatch의 매 Tick 알림과 시작·재개 알림, callback 예외 이후 순회 복구, callback이 생성한 timer의 다음 Tick 진행, 중복 등록 실패와 소유 service 정리, null callback의 기존 예외를 검증한다. 추가 clock/speed 검사는 scaled/unscaled delta를 구분한다.
+
+TimerDriverLifecycleTest는 같은 driver의 중복 설치 방지, 두 driver의 독립 해제, bootstrap Shutdown 후 handle dispose와 PlayerLoop 정리를 검증한다. 각 테스트는 원래 PlayerLoop와 자기 객체를 복원한다.
+
+호스트와 선언된 의존성만 사용하는 별도 소비 환경에서 EditMode/PlayMode를 구분하고 실제 Editor 패치·플랫폼·실행/통과/실패/건너뜀 수·신선한 보고서를 기록한다. 실제 샘플·Inspector 관찰과 Windows Player 빌드는 별도 증거다. Git 소비 프로젝트는 bootstrapper Git URL도 직접 선언하며 timer 태그 검증은 사용자 게시 후 수행한다.

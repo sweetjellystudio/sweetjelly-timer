@@ -1,11 +1,11 @@
 ﻿{
     "name":  "com.sweetjelly.timer",
-    "version":  "1.0.0",
+    "version":  "2.0.0",
     "displayName":  "SWeetJelly Timer",
     "description":  "This is SWeetJelly Timer Service",
-    "unity":  "2022.3",
+    "unity":  "6000.3",
     "dependencies":  {
-                         "com.sweetjelly.bootstrapper":  "1.0.0"
+                         "com.sweetjelly.bootstrapper":  "2.0.0"
                      },
     "author":  {
                    "name":  "SWeetJellyStudio",
@@ -19,5 +19,5 @@
                         "path":  "Samples~/Basic"
                     }
                 ],
-    "license":  "MIT"
+    "license":  "Refer to LICENSE.md file"
 }

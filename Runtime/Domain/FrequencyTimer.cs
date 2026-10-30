@@ -43,7 +43,7 @@ namespace SWeetJelly.Timer.Domain
         {
             CurrentTime += deltaTime;
 
-            while (CurrentTime >= intervalSeconds)
+            while (State == TimerState.Running && CurrentTime >= intervalSeconds)
             {
                 CurrentTime -= intervalSeconds;
                 onTick.Invoke();

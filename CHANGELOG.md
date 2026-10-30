@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v2.0.0 (unreleased)
+
+*   [Changed] Minimum Unity is 6.3 LTS; bootstrapper dependency is 2.0.0.
+*   [Fixed] Frequency callbacks stop catch-up after Stop/Pause/Dispose.
+*   [Fixed] Callback-driven service disposal and Tick reentry no longer corrupt iteration.
+*   [Fixed] Stopwatch callbacks now observe every advancing Tick while preserving start/resume notifications.
+*   [Fixed] Failed bootstrap cleans newly created resources; shutdown unregisters only the owned service.
+*   [Fixed] Frequency callback nullability matches the existing non-null requirement; sample camera no longer carries undeclared URP/audio references.
+*   [Added] Regression/lifecycle tests and maintained package architecture, agent and decision docs.
+
+This is a local candidate; the user handles publication.
+
 ## v1.0.0
 
 *   [Added] Added `ITimerService` as the public timer API for starting countdown, frequency, and stopwatch timers.
