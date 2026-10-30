@@ -4,7 +4,11 @@
     "references": [
         "SWeetJelly.Timer.Contract",
         "SWeetJelly.Timer.App",
-        "SWeetJelly.Timer.Framework.Unity"
+        "SWeetJelly.Timer.Framework.Unity",
+        "SWeetJelly.Timer.Framework.Bootstrapper",
+        "SWeetJelly.Bootstrapper.App",
+        "SWeetJelly.Bootstrapper.Contract",
+        "SWeetJelly.Bootstrapper.Framework.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

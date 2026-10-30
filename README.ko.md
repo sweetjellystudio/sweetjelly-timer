@@ -294,7 +294,7 @@ var handle = timerService.StartCountdown(
 ### Use Unscaled Time
 
 ```csharp
-new TimerOptions(useUnscaledTime: true)
+new TimerOptions(useUnscaledTime: true, tickSpeed: 1f)
 ```
 
 `Time.deltaTime` 대신 `Time.unscaledDeltaTime`을 사용합니다.
@@ -302,7 +302,7 @@ new TimerOptions(useUnscaledTime: true)
 ### Tick Speed
 
 ```csharp
-new TimerOptions(tickSpeed: 2f)
+new TimerOptions(useUnscaledTime: false, tickSpeed: 2f)
 ```
 
 `tickSpeed: 2f`인 timer는 두 배 빠르게 진행됩니다.
@@ -350,26 +350,18 @@ public void DisposeTimer()
 
 ## Bootstrapper Integration
 
-Bootstrapper package을 사용할 때는 `TimerPackageBootstrapperSo`로 timer player loop driver를 설치할 수 있습니다.
+Create > SWeetJelly > Bootstrapper > Packages > Timer에서 TimerPackageBootstrapperSo 에셋을 만듭니다. PackageBootstrapperProfileSo에 추가하고 BootstrapperBehaviour에 profile을 할당합니다. 실제 실행은 Bootstrap(context)/Shutdown(context)이며 ScriptableObject를 new로 만들거나 이전 Initialise/Unload 예제를 사용하지 않습니다.
 
 ```csharp
-using SWeetJelly.Timer.App;
-using SWeetJelly.Timer.Framework.Unity;
-using SWeetJelly.Timer.Framework.Bootstrapper;
+using SWeetJelly.Bootstrapper.Framework.Unity;
+using SWeetJelly.Timer.Contract;
 
-var timerService = new TimerService();
-var timerDriver = new PlayerLoopTimerDriver(timerService);
-
-var initModule = new TimerPackageBootstrapperSo(timerDriver);
-initModule.Initialise();
+// In a consumer after bootstrap, or in composition code with an explicit context:
+ITimerService timerService = BootstrapperBehaviour.Services.Resolve<ITimerService>();
+var handle = timerService.StartCountdown(3f);
 ```
 
-unload 시:
-
-```csharp
-initModule.Unload();
-timerService.Dispose();
-```
+module이 PlayerLoop driver와 service를 소유합니다. 소비자는 handle을 Dispose하고, module Shutdown은 자신의 driver·등록을 해제하며 남은 timer를 정리합니다.
 
 ## 설계 메모
 
@@ -417,18 +409,28 @@ Project.Framework / Bootstrap
 
 ## Version Notes
 
-### 2.0.0
+2.0.0은 Unity 6.3 LTS와 bootstrapper 2.0.0을 기준으로 의존성·callback·정리 동작을 갱신합니다. 기존 서비스 구조는 유지합니다. 상세 이력은 CHANGELOG.md를 참고하세요.
 
-이 버전은 breaking architecture refactor를 도입합니다.
+## 2.0.0 이전과 Git 설치
 
-주요 변경:
+Unity 6.3 LTS와 bootstrapper 2.0.0이 필요합니다. timer 태그 게시 후 소비 프로젝트 manifest에 두 Git 패키지를 명시합니다.
 
-- 기존 `BaseTimerManager` 중심 흐름을 `ITimerService`로 교체
-- timer instance의 직접적인 `ServiceLocator` 의존 제거
-- Unity `PlayerLoop` integration을 `PlayerLoopTimerDriver`로 이동
-- module을 `Contract`, `Domain`, `App`, `Framework/Unity`, `Framework/Bootstrapper`으로 분리
-- Timer domain object가 순수 timer logic을 가지도록 변경
+```json
+{
+  "dependencies": {
+    "com.sweetjelly.bootstrapper": "https://github.com/sweetjellystudio/sweetjelly-bootstrapper.git#v2.0.0",
+    "com.sweetjelly.timer": "https://github.com/sweetjellystudio/sweetjelly-timer.git#v2.0.0"
+  }
+}
+```
 
-### 1.x
+패키지 manifest는 bootstrapper 버전을 선언하고 Git URL은 소비 프로젝트가 지정합니다. uGUI는 bootstrapper의 선언 의존성으로 해석되며 UI Toolkit 의존성은 추가하지 않습니다.
 
-`1.x` 버전은 이전 inheritance/global-manager 기반 구조를 사용하는 초기 내부 릴리즈로 간주합니다.
+공개 timer 시그니처와 직렬화 필드는 유지합니다. Stopwatch callback은 시작·재개 알림과 함께 실행 중 매 Tick 이후 경과 시간을 전달합니다. Frequency의 Stop/Pause/Dispose는 같은 Tick의 catch-up 중에도 적용합니다. Callback 예외는 계속 호출자에게 전파하고, Tick 재진입은 순회를 변경하기 전에 거부합니다. Callback 안의 service Dispose는 지원합니다. StartFrequency는 기존처럼 null callback을 거부하며 nullable 표기를 실제 요구와 일치시켰습니다.
+
+Reset은 Idle 상태로 되돌릴 뿐 재시작하거나 서비스에서 제거된 handle을 다시 등록하지 않습니다. 중지·완료 후 새 작업은 service에서 새 timer로 시작하세요. 수동 조립에서는 driver/service를 직접 Dispose하고, profile 방식에서는 package bootstrapper가 이 자원을 소유합니다.
+
+[아키텍처][architecture]와 [callback 결정][decision]을 참고하세요. 실제 검증 Editor 패치·플랫폼은 지원 정책과 별도로 기록합니다.
+
+[architecture]: ARCHITECTURE.md
+[decision]: docs/adr/0001-callback-and-bootstrap-lifetime.md

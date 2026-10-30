@@ -312,7 +312,7 @@ var handle = timerService.StartCountdown(
 ### Use Unscaled Time
 
 ```csharp
-new TimerOptions(useUnscaledTime: true)
+new TimerOptions(useUnscaledTime: true, tickSpeed: 1f)
 ```
 
 Uses `Time.unscaledDeltaTime` instead of `Time.deltaTime`.
@@ -320,7 +320,7 @@ Uses `Time.unscaledDeltaTime` instead of `Time.deltaTime`.
 ### Tick Speed
 
 ```csharp
-new TimerOptions(tickSpeed: 2f)
+new TimerOptions(useUnscaledTime: false, tickSpeed: 2f)
 ```
 
 A timer with `tickSpeed: 2f` progresses twice as fast.
@@ -372,28 +372,18 @@ public void DisposeTimer()
 
 ## Bootstrapper Integration
 
-When using the Bootstrapper package, `TimerPackageBootstrapperSo` can be used to install the timer player loop driver.
+Create a TimerPackageBootstrapperSo asset with Create > SWeetJelly > Bootstrapper > Packages > Timer. Add it to a PackageBootstrapperProfileSo and assign that profile to BootstrapperBehaviour. The bootstrapper calls Bootstrap(context)/Shutdown(context); do not construct this ScriptableObject with new or call obsolete Initialise/Unload examples.
 
 ```csharp
-using SWeetJelly.Timer.App;
-using SWeetJelly.Timer.Framework.Unity;
-using SWeetJelly.Timer.Framework.Bootstrapper;
+using SWeetJelly.Bootstrapper.Framework.Unity;
+using SWeetJelly.Timer.Contract;
 
-var timerService = new TimerService();
-var timerDriver = new PlayerLoopTimerDriver(timerService);
-
-var initModule = new TimerPackageBootstrapperSo(timerDriver);
-initModule.Initialise();
+// In a consumer after bootstrap, or in composition code with an explicit context:
+ITimerService timerService = BootstrapperBehaviour.Services.Resolve<ITimerService>();
+var handle = timerService.StartCountdown(3f);
 ```
 
-On unload:
-
-```csharp
-initModule.Unload();
-timerService.Dispose();
-```
-
----
+The module owns its PlayerLoop driver and service. Consumers dispose their handles; module Shutdown removes its own driver/registration and disposes remaining timers.
 
 ## Design Notes
 
@@ -440,3 +430,27 @@ Project.Framework / Bootstrap
 ```
 
 This allows systems such as `LevelSession` to use timers without knowing how the timer service is updated.
+
+## 2.0.0 migration and Git installation
+
+Requires Unity 6.3 LTS and bootstrapper 2.0.0. After the timer tag is published, declare both Git packages in the consumer project's manifest:
+
+```json
+{
+  "dependencies": {
+    "com.sweetjelly.bootstrapper": "https://github.com/sweetjellystudio/sweetjelly-bootstrapper.git#v2.0.0",
+    "com.sweetjelly.timer": "https://github.com/sweetjellystudio/sweetjelly-timer.git#v2.0.0"
+  }
+}
+```
+
+The package manifest declares bootstrapper by version; Git dependency URLs belong to the consumer project. uGUI is resolved through bootstrapper's declared dependencies. No direct UI Toolkit dependency is added.
+
+Public timer signatures and serialized asset fields are retained. Stopwatch callbacks now run after each advancing Tick as well as at start/resume. Frequency Stop/Pause/Dispose takes effect during catch-up. Callback exceptions still propagate, and recursive Tick is rejected before changing iteration state. Dispose inside a callback is supported. StartFrequency still requires a non-null callback; its nullable annotation now matches that existing runtime requirement.
+
+Reset returns a handle to Idle; it does not restart or re-register a handle already removed from the service. Create a new service timer to schedule another operation after stop/completion. Dispose the PlayerLoop driver and service when using manual composition; the package bootstrapper owns those resources when using a profile.
+
+See [architecture][architecture] and the [callback decision][decision]. Actual Editor patch/platform verification is recorded separately from the support policy.
+
+[architecture]: ARCHITECTURE.md
+[decision]: docs/adr/0001-callback-and-bootstrap-lifetime.md

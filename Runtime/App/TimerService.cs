@@ -11,8 +11,9 @@ namespace SWeetJelly.Timer.App
     {
         private readonly List<TimerBase> timers = new();
         private readonly List<TimerBase> sweep = new();
-
+        private readonly Dictionary<TimerBase, Action<float>> tickCallbacks = new();
         private bool disposed;
+        private bool ticking;
 
         public ITimerHandle StartCountdown(
             float seconds,
@@ -63,6 +64,7 @@ namespace SWeetJelly.Timer.App
             {
                 timer.Started += _ => onTick.Invoke(timer.CurrentTime);
                 timer.Resumed += _ => onTick.Invoke(timer.CurrentTime);
+                tickCallbacks.Add(timer, onTick);
             }
 
             RegisterAndStart(timer);
@@ -73,55 +75,65 @@ namespace SWeetJelly.Timer.App
         {
             if (disposed)
                 return;
-
+            if (ticking)
+                throw new InvalidOperationException("TimerService.Tick cannot be reentered.");
             if (timers.Count == 0)
                 return;
 
-            sweep.Clear();
-            sweep.AddRange(timers);
-
-            foreach (var timer in sweep)
+            ticking = true;
+            try
             {
-                if (timer.State == TimerState.Disposed ||
-                    timer.State == TimerState.Stopped ||
-                    timer.State == TimerState.Completed)
+                sweep.Clear();
+                sweep.AddRange(timers);
+                foreach (var timer in sweep)
                 {
-                    timers.Remove(timer);
-                    continue;
-                }
+                    if (IsTerminal(timer))
+                    {
+                        timers.Remove(timer);
+                        tickCallbacks.Remove(timer);
+                        continue;
+                    }
 
-                var dt = timer.UseUnscaledTime ? unscaledDeltaTime : deltaTime;
-                dt *= timer.TickSpeed;
+                    var dt = timer.UseUnscaledTime ? unscaledDeltaTime : deltaTime;
+                    dt *= timer.TickSpeed;
+                    timer.Tick(dt);
+                    if (disposed)
+                        break;
 
-                timer.Tick(dt);
+                    if (dt > 0f && timer.IsRunning && tickCallbacks.TryGetValue(timer, out var callback))
+                        callback(timer.CurrentTime);
+                    if (disposed)
+                        break;
 
-                if (timer.State == TimerState.Disposed ||
-                    timer.State == TimerState.Stopped ||
-                    timer.State == TimerState.Completed)
-                {
-                    timers.Remove(timer);
+                    if (IsTerminal(timer))
+                    {
+                        timers.Remove(timer);
+                        tickCallbacks.Remove(timer);
+                    }
                 }
             }
-
-            sweep.Clear();
+            finally
+            {
+                sweep.Clear();
+                ticking = false;
+            }
         }
 
         public void Dispose()
         {
             if (disposed)
                 return;
-
             disposed = true;
-
-            sweep.Clear();
-            sweep.AddRange(timers);
-
-            foreach (var timer in sweep)
+            foreach (var timer in timers)
                 timer.Dispose();
-
             timers.Clear();
-            sweep.Clear();
+            tickCallbacks.Clear();
+            if (!ticking)
+                sweep.Clear();
         }
+
+        private static bool IsTerminal(TimerBase timer) => timer.State == TimerState.Disposed
+            || timer.State == TimerState.Stopped || timer.State == TimerState.Completed;
 
         private void RegisterAndStart(TimerBase timer)
         {
